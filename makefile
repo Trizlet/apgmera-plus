@@ -6,7 +6,8 @@ COMPILER_FLAGS=-c -Wall -Wextra -pedantic -O3 -pthread -g
 LD_FLAGS=-pthread
 
 ifdef USE_MINGW
-ifeq "$(shell uname -s | grep -o CYGWIN)" "CYGWIN"
+PLATFORM=$(shell uname -s)
+ifneq (, $(findstring CYGWIN, $(PLATFORM))$(findstring MINGW, $(PLATFORM)))
 CPP_COMPILER=x86_64-w64-mingw32-g++
 C_COMPILER=x86_64-w64-mingw32-gcc
 else
