@@ -37,8 +37,8 @@ ANSI_REGEX = re.compile(r'\x1b\[[0-9;]*[a-zA-Z]')
 
 # Color palettes (TrueColor & ANSI)
 PALETTES = [
-    {"name": "white",   "mode": "static",  "color": "\033[38;5;255m",         "rgb": (255, 255, 255), "label": "White"},
     {"name": "age",     "mode": "age",     "color": "age",                    "rgb": None,            "label": "Age Heatmap (TinyLife)"},
+    {"name": "white",   "mode": "static",  "color": "\033[38;5;255m",         "rgb": (255, 255, 255), "label": "White"},
     {"name": "rainbow", "mode": "rainbow", "color": "rainbow",                "rgb": None,            "label": "Rainbow Wave"},
     {"name": "cyan",    "mode": "static",  "color": "\033[38;2;0;229;255m",   "rgb": (0, 229, 255),   "label": "Cyan (TinyLife)"},
     {"name": "green",   "mode": "static",  "color": "\033[38;2;80;250;123m",  "rgb": (80, 250, 123),  "label": "Phosphor Green"},

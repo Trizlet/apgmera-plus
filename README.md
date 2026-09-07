@@ -10,11 +10,17 @@ A high-performance C++ search program for Conway's Game of Life and other cellul
 
 ### 1. Prerequisites (Linux / WSL)
 
-Ensure you have a C++ compiler (`gcc` or `clang`), `make`, and `libcurl` development headers installed:
+Ensure you have a C++ compiler (`gcc` or `clang`), `make`, `pkg-config`, and `libcurl` development headers installed:
 
 ```bash
 # Debian / Ubuntu / WSL:
 sudo apt update && sudo apt install -y build-essential pkg-config libcurl4-openssl-dev python3
+
+# Fedora / RHEL:
+sudo dnf install -y gcc-c++ make pkgconf libcurl-devel python3
+
+# Arch Linux:
+sudo pacman -S --needed base-devel curl python
 ```
 
 *(Optional: `pip install pillow` for animated GIF exports in the dashboard.)*
@@ -41,7 +47,7 @@ Replace `mykey` with your [payosha256 key](https://catagolue.hatsya.com/payosha2
 
 ## Live Terminal Dashboard (`apg_dashboard.py`)
 
-This fork includes an interactive, zero-flicker terminal dashboard and pattern visualizer. It monitors `apgluxe` in real time, displays live statistics, and renders newly discovered patterns with longevity heatmaps.
+This fork includes an interactive terminal dashboard and pattern visualizer that runs alongside `apgluxe` to monitor search progress, display haul statistics, and render newly discovered patterns in real time.
 
 ```bash
 python3 apg_dashboard.py [options]
