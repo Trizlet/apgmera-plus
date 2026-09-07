@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import sys
 import re
@@ -11,8 +11,8 @@ def main():
 
     if (len(sys.argv) < 3):
         print("Usage:")
-        print("python mkparams.py b3s23 C1")
-        exit(1)
+        print("python3 mkparams.py b3s23 C1")
+        sys.exit(1)
 
     rulestring = sys.argv[1]
     symmetry = sys.argv[2]

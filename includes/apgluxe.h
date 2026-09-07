@@ -18,7 +18,39 @@ void sigwaiter(const sigset_t *set, std::atomic<bool> *running)
 }
 #endif
 
+#ifdef USE_CURL
+struct CurlGlobalInit {
+    CurlGlobalInit() { curl_global_init(CURL_GLOBAL_DEFAULT); }
+    ~CurlGlobalInit() { curl_global_cleanup(); }
+};
+#endif
+
 int run_apgluxe(int argc, char *argv[]) {
+
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+            std::cout << "Usage: apgluxe [OPTIONS]\n\n"
+                      << "Options:\n"
+                      << "  -n <count>       Number of soups per haul (default: 10000000)\n"
+                      << "  -p <threads>     Number of CPU worker threads\n"
+                      << "  -k <key>         Payosha256 key for Catagolue (default: #anon)\n"
+                      << "  -s <seed>        Random seed string\n"
+                      << "  -L 1             Save hauls to local log files\n"
+                      << "  -t 1             Test mode (disables uploading to Catagolue)\n"
+                      << "  -i <count>       Number of hauls before exiting\n"
+                      << "  -v <ratio>       Peer-verify hauls per uploaded haul\n"
+                      << "  -u <count>       Universe count (4096 or 8192, default: 8192)\n"
+                      << "  --rule <rule>    Target rule (e.g. b3s23)\n"
+                      << "  --symmetry <sym> Target symmetry (e.g. C1)\n"
+                      << "  -h, --help       Display this help message\n"
+                      << std::endl;
+            return 0;
+        }
+    }
+
+    #ifdef USE_CURL
+    CurlGlobalInit curlInit;
+    #endif
 
     if (apg::rule2int(RULESTRING) != 0) {
         std::cerr << "Abort: apgsearch rule does not match lifelib rule" << std::endl;

@@ -1,2 +1,2 @@
-
-bash "recompile.sh" "$@" "--immediate"
+#!/bin/bash
+exec bash "recompile.sh" "$@" "--immediate"

@@ -624,7 +624,8 @@ def main():
             i += 1
 
     if not cmd:
-        cmd = ["./apgluxe", "-n", "20000000", "-p", "8", "-k", "QNh1WemIRtdxNuyVDz5ZkL50CxGICmC4", "-L", "1"]
+        default_key = os.environ.get("PAYOSHA_KEY", "QNh1WemIRtdxNuyVDz5ZkL50CxGICmC4")
+        cmd = ["./apgluxe", "-n", "20000000", "-p", "8", "-k", default_key, "-L", "1"]
 
     state = DashboardState()
     engine = LifeEngine(60, 30, rule=state.rule)

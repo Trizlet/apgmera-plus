@@ -57,8 +57,6 @@ PROFILE_DEPENDENCIES=$(EXECUTABLE_PROFILE)
 PROFILE_ARGS=-fprofile-use -fprofile-correction
 ifeq "$(shell $(CPP_COMPILER) --version | grep -o clang)" "clang"
 PROF_MERGER=$(shell bash -c 'compgen -c' | grep 'llvm-profdata' | sort -V | tail -n 1)
-else
-CPP_FLAGS += -funsafe-loop-optimizations -Wunsafe-loop-optimizations
 endif
 ifeq "$(PROF_MERGER)" ""
 PROF_MERGER=xcrun llvm-profdata
@@ -66,6 +64,7 @@ endif
 endif
 
 .SUFFIXES: .cpp .cu .o .op
+.PHONY: all clean
 
 # Compile:
 all: $(CPP_SOURCES) $(PROFILE_DEPENDENCIES) $(EXECUTABLE)
@@ -80,8 +79,8 @@ all: $(CPP_SOURCES) $(PROFILE_DEPENDENCIES) $(EXECUTABLE)
 
 # Clean the build environment by deleting any object files:
 clean: 
-	sh -c 'rm -f apgluxe *.o */*.o *.op */*.op *.gdca */*.gcda *.profraw *.profdata || true'
-	echo Clean done
+	rm -f $(EXECUTABLE) $(EXECUTABLE_PROFILE) *.o */*.o *.op */*.op *.gcda */*.gcda *.gcno */*.gcno *.profraw *.profdata default.profdata
+	@echo Clean done
 
 $(EXECUTABLE): $(OBJECTS)
 	$(LINKER) $(LD_FLAGS) $(PROFILE_ARGS) $(OBJECTS) $(EXTRA_LIBS) -o $@
