@@ -1,4 +1,4 @@
-# apgluxe (apgmera)
+# apgmera+ (apgluxe)
 
 A high-performance C++ search program for Conway's Game of Life and other cellular automata. It searches random initial configurations ("soups") and periodically uploads discoveries to [Catagolue](https://catagolue.hatsya.com/).
 
@@ -22,8 +22,8 @@ sudo apt update && sudo apt install -y build-essential pkg-config libcurl4-opens
 ### 2. Clone & Compile
 
 ```bash
-git clone https://github.com/Trizlet/apgmera.git
-cd apgmera
+git clone https://github.com/Trizlet/apgmera-plus.git
+cd apgmera-plus
 ./recompile.sh
 ```
 
@@ -39,7 +39,7 @@ Replace `mykey` with your [payosha256 key](https://catagolue.hatsya.com/payosha2
 
 ---
 
-## 🧬 Live Terminal Dashboard (`apg_dashboard.py`)
+## Live Terminal Dashboard (`apg_dashboard.py`)
 
 This fork includes an interactive, zero-flicker terminal dashboard and pattern visualizer. It monitors `apgluxe` in real time, displays live statistics, and renders newly discovered patterns with longevity heatmaps.
 
