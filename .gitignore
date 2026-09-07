@@ -4,3 +4,7 @@
 apgluxe
 apgluxe-profile
 includes/params.h
+log.*.txt
+*.profdata
+*.profraw
+exports/

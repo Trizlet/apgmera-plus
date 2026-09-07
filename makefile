@@ -33,8 +33,15 @@ LD_FLAGS=
 CU_SOURCES=includes/gpusrc.cu
 LINKER=$(CU_COMPILER)
 else
-COMPILER_FLAGS += -flto
-LD_FLAGS += -flto
+COMPILER_FLAGS += -flto=auto
+LD_FLAGS += -flto=auto
+endif
+
+ifndef USE_MINGW
+ifeq ($(shell pkg-config --exists libcurl 2>/dev/null && echo yes),yes)
+COMPILER_FLAGS += -DUSE_CURL $(shell pkg-config --cflags libcurl)
+EXTRA_LIBS += $(shell pkg-config --libs libcurl)
+endif
 endif
 
 OBJECTS=$(CPP_SOURCES:.cpp=.o) $(C_SOURCES:.c=.o) $(CU_SOURCES:.cu=.o)
@@ -89,7 +96,7 @@ $(EXECUTABLE): $(OBJECTS)
 
 $(EXECUTABLE_PROFILE): $(OBJECTS_PROFILE)
 	true        Using merger $(PROF_MERGER)
-	$(LINKER) $(LD_FLAGS) -fprofile-generate $(OBJECTS_PROFILE) -o $@
+	$(LINKER) $(LD_FLAGS) -fprofile-generate $(OBJECTS_PROFILE) $(EXTRA_LIBS) -o $@
 	true        Generating optimization profile, this may take some time...
 	./$@ -n 100000 -t 1 -s l_kEwHfF3ArtPb -p $(THREADS) -i 1 -v 0
 	$(PROF_MERGER) merge -o default.profdata *.profraw

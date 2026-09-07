@@ -4,19 +4,18 @@ set -e
 chmod 755 *.sh
 
 # Ensures 'make' works properly:
-rm -f ".depend" | true
-rm -f "main.o" | true
+rm -f ".depend" "main.o"
 make clean
 
 # Ensures compilation will fail unless rule2asm succeeds:
-rm -f "includes/params.h" | true
+rm -f "includes/params.h"
 
-rulearg=`echo "$@" | grep -o "\\-\\-rule [^ ]*" | sed "s/\\-\\-rule\\ //"`
-symmarg=`echo "$@" | grep -o "\\-\\-symmetry [^ ]*" | sed "s/\\-\\-symmetry\\ //"`
-profilearg=`echo "$@" | grep -o "\\-\\-profile" | sed "s/\\-\\-profile/u/"`
-mingwarg=`echo "$@" | grep -o "\\-\\-mingw" | sed "s/\\-\\-mingw/u/"`
-gpuarg=`echo "$@" | grep -o "\\-\\-cuda" | sed "s/\\-\\-cuda/u/"`
-immarg=`echo "$@" | grep -o "\\-\\-immediate" | sed "s/\\-\\-immediate/u/"`
+rulearg=$(echo "$@" | grep -o -- '--rule [^ ]*' | sed 's/--rule //')
+symmarg=$(echo "$@" | grep -o -- '--symmetry [^ ]*' | sed 's/--symmetry //')
+profilearg=$(echo "$@" | grep -o -- '--profile' | sed 's/--profile/u/')
+mingwarg=$(echo "$@" | grep -o -- '--mingw' | sed 's/--mingw/u/')
+gpuarg=$(echo "$@" | grep -o -- '--cuda' | sed 's/--cuda/u/')
+immarg=$(echo "$@" | grep -o -- '--immediate' | sed 's/--immediate/u/')
 
 if [ "${#symmarg}" -ne 0 ]; then
 if [ "${symmarg:0:1}" = "G" ]; then
@@ -56,8 +55,15 @@ gpuarg2="false"
 
 if [ "${#gpuarg}" -ne 0 ]; then
 export USE_GPU=1
-
 gpuarg2="true"
+if ! command -v nvcc &>/dev/null; then
+    for cuda_dir in /usr/local/cuda/bin /usr/local/cuda-*/bin; do
+        if [ -x "$cuda_dir/nvcc" ]; then
+            export PATH="$cuda_dir:$PATH"
+            break
+        fi
+    done
+fi
 fi
 
 echo "Configuring rule $rulearg; symmetry $symmarg"

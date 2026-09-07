@@ -62,6 +62,61 @@ void increment_catagolue() {
 
 }
 
+#ifdef USE_CURL
+#include <curl/curl.h>
+
+static size_t curl_write_string(void *contents, size_t size, size_t nmemb, void *userp)
+{
+    ((std::string*)userp)->append((char*)contents, size * nmemb);
+    return size * nmemb;
+}
+
+std::string catagolueRequest(const char *payload, const char *endpoint)
+{
+    CURL *curl = curl_easy_init();
+    if (!curl) {
+        std::cerr << "curl_easy_init() failed; ";
+        increment_catagolue();
+        return "";
+    }
+
+    std::string url = "https://" + std::string(CATAGOLUE_NAME) + std::string(endpoint);
+    std::string response_data;
+
+    struct curl_slist *headers = NULL;
+    headers = curl_slist_append(headers, "Connection: close");
+    headers = curl_slist_append(headers, "Content-Type: text/plain");
+    headers = curl_slist_append(headers, "User-Agent: Anaconda-urllib/2.7");
+
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload);
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_string);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response_data);
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30L);
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+
+    CURLcode res = curl_easy_perform(curl);
+    long http_status = 0;
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_status);
+
+    curl_slist_free_all(headers);
+    curl_easy_cleanup(curl);
+
+    if (res != CURLE_OK) {
+        std::cerr << "Internet does not exist (" << curl_easy_strerror(res) << "); ";
+        increment_catagolue();
+        return "";
+    }
+
+    if (http_status == 200) {
+        return response_data;
+    } else {
+        std::cerr << "Bad status: " << http_status << std::endl;
+        return "";
+    }
+}
+#else
 std::string catagolueRequest(const char *payload, const char *endpoint)
 {
 
@@ -111,6 +166,7 @@ std::string catagolueRequest(const char *payload, const char *endpoint)
     }
 
 }
+#endif
 
 
 std::string authenticate(const char *payosha256_key, const char *operation_name)
